@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rennfahrzeug-Datenbank</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+        }
+        label {
+            font-weight: bold;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1><u>Rennfahrzeug-Datenbank</u></h1>
+
+    <!-- Schritt 1: Kategorie auswählen -->
+    <div class="input-group">
+        <label for="kategorien">Kategorie auswählen:</label>
+        <select id="kategorien">
+            <option value="">-- Bitte wählen --</option>
+            <option value="GT3">GT3</option>
+            <option value="LMDH">LMDH</option>
+            <option value="LMP2">LMP2</option>
+            <option value="GT4">GT4</option>
+        </select>
+    </div>
+
+    <!-- Schritt 2: Modell auswählen -->
+    <div class="input-group">
+        <label for="modelle">Modell auswählen:</label>
+        <select id="modelle">
+            <option value="">-- Bitte wählen --</option>
+            <!-- Modelle werden dynamisch geladen -->
+        </select>
+    </div>
+
+    <!-- Schritt 3: Strecke auswählen -->
+    <div class="input-group">
+        <label for="strecken">Strecke auswählen:</label>
+        <select id="strecken">
+            <option value="">-- Bitte wählen --</option>
+            <!-- Strecken werden dynamisch geladen -->
+        </select>
+    </div>
+
+    <!-- Ergebnisse -->
+    <table id="ergebnisse">
+        <thead>
+            <tr>
+                <th>Spritverbrauch pro Runde (Liter)</th>
+                <th>Spritverbrauch pro Rennen (Liter)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Hier werden die Ergebnisse dynamisch eingefügt -->
+        </tbody>
+    </table>
+
+    <script>
+        // Datenbank (als JavaScript-Objekt)
+        const datenbank = [
+            // GT3 - Porsche
+            { kategorie: "GT3", modell: "Porsche", strecke: "Cascais", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Porsche", strecke: "Daytona Sport Car", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Porsche", strecke: "Imola", verbrauchRunde: "3,03", verbrauchRennen: "61,00" },
+            { kategorie: "GT3", modell: "Porsche", strecke: "Interlagos", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Porsche", strecke: "LeMans", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Porsche", strecke: "Road America", verbrauchRunde: "3,90", verbrauchRennen: "65,00" },
+            { kategorie: "GT3", modell: "Porsche", strecke: "Sebring", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Porsche", strecke: "SPA", verbrauchRunde: "4,00", verbrauchRennen: "61,00" },
+            { kategorie: "GT3", modell: "Porsche", strecke: "Watkins Glen", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+
+            // GT3 - Lamborghini
+            { kategorie: "GT3", modell: "Lamborghini", strecke: "Cascais", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Lamborghini", strecke: "Daytona Sport Car", verbrauchRunde: "3,75", verbrauchRennen: "77,00" },
+            { kategorie: "GT3", modell: "Lamborghini", strecke: "Imola", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Lamborghini", strecke: "Interlagos", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Lamborghini", strecke: "LeMans", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Lamborghini", strecke: "Road America", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Lamborghini", strecke: "Sebring", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Lamborghini", strecke: "SPA", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Lamborghini", strecke: "Watkins Glen", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+
+            // GT3 - Audi
+            { kategorie: "GT3", modell: "Audi", strecke: "Cascais", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Audi", strecke: "Daytona Sport Car", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Audi", strecke: "Imola", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Audi", strecke: "Interlagos", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Audi", strecke: "LeMans", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Audi", strecke: "Road America", verbrauchRunde: "Unbekannt", verbrauchRennen: "65,00" },
+            { kategorie: "GT3", modell: "Audi", strecke: "Sebring", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "GT3", modell: "Audi", strecke: "SPA", verbrauchRunde: "Unbekannt", verbrauchRennen: "65,00" },
+            { kategorie: "GT3", modell: "Audi", strecke: "Watkins Glen", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+			
+            // LMDH - BMW
+            { kategorie: "LMDH", modell: "BMW", strecke: "Cascais", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "LMDH", modell: "BMW", strecke: "Daytona Sport Car", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "LMDH", modell: "BMW", strecke: "Imola", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "LMDH", modell: "BMW", strecke: "Interlagos", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "LMDH", modell: "BMW", strecke: "LeMans", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "LMDH", modell: "BMW", strecke: "Road America", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "LMDH", modell: "BMW", strecke: "Sebring", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "LMDH", modell: "BMW", strecke: "SPA", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" },
+            { kategorie: "LMDH", modell: "BMW", strecke: "Watkins Glen", verbrauchRunde: "Unbekannt", verbrauchRennen: "Unbekannt" }
+        ];
+
+        // Funktion zum Laden der Modelle basierend auf der ausgewählten Kategorie
+        function ladeModelle(gewaehlteKategorie) {
+            const modelleDropdown = document.getElementById("modelle");
+            modelleDropdown.innerHTML = '<option value="">-- Bitte wählen --</option>';
+
+            if (gewaehlteKategorie) {
+                const modelle = [...new Set(datenbank
+                    .filter(eintrag => eintrag.kategorie === gewaehlteKategorie)
+                    .map(eintrag => eintrag.modell)
+                )];
+
+                modelle.forEach(modell => {
+                    const option = document.createElement("option");
+                    option.value = modell;
+                    option.textContent = modell;
+                    modelleDropdown.appendChild(option);
+                });
+            }
+        }
+
+        // Funktion zum Laden der Strecken basierend auf der ausgewählten Kategorie und dem Modell
+        function ladeStrecken(gewaehlteKategorie, gewaehltesModell) {
+            const streckenDropdown = document.getElementById("strecken");
+            streckenDropdown.innerHTML = '<option value="">-- Bitte wählen --</option>';
+
+            if (gewaehlteKategorie && gewaehltesModell) {
+                const strecken = [...new Set(datenbank
+                    .filter(eintrag => eintrag.kategorie === gewaehlteKategorie && eintrag.modell === gewaehltesModell)
+                    .map(eintrag => eintrag.strecke)
+                )];
+
+                strecken.forEach(strecke => {
+                    const option = document.createElement("option");
+                    option.value = strecke;
+                    option.textContent = strecke;
+                    streckenDropdown.appendChild(option);
+                });
+            }
+        }
+
+        // Funktion zum Anzeigen der Daten
+        function zeigeDaten(gewaehlteKategorie, gewaehltesModell, gewaehlteStrecke) {
+            const tbody = document.querySelector("#ergebnisse tbody");
+            tbody.innerHTML = ""; // Tabelle leeren
+
+            if (gewaehlteKategorie && gewaehltesModell && gewaehlteStrecke) {
+                const eintrag = datenbank.find(e => e.kategorie === gewaehlteKategorie && e.modell === gewaehltesModell && e.strecke === gewaehlteStrecke);
+
+                if (eintrag) {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${eintrag.verbrauchRunde}</td>
+                        <td>${eintrag.verbrauchRennen}</td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            }
+        }
+
+        // Event-Listener für das Kategorie-Dropdown
+        document.getElementById("kategorien").addEventListener("change", function() {
+            const gewaehlteKategorie = this.value;
+            ladeModelle(gewaehlteKategorie);
+            ladeStrecken(gewaehlteKategorie, "");
+            zeigeDaten(gewaehlteKategorie, "", "");
+        });
+
+        // Event-Listener für das Modell-Dropdown
+        document.getElementById("modelle").addEventListener("change", function() {
+            const gewaehlteKategorie = document.getElementById("kategorien").value;
+            const gewaehltesModell = this.value;
+            ladeStrecken(gewaehlteKategorie, gewaehltesModell);
+            zeigeDaten(gewaehlteKategorie, gewaehltesModell, "");
+        });
+
+        // Event-Listener für das Strecken-Dropdown
+        document.getElementById("strecken").addEventListener("change", function() {
+            const gewaehlteKategorie = document.getElementById("kategorien").value;
+            const gewaehltesModell = document.getElementById("modelle").value;
+            const gewaehlteStrecke = this.value;
+            zeigeDaten(gewaehlteKategorie, gewaehltesModell, gewaehlteStrecke);
+        });
+    </script>
+</body>
+</html>
+
+<!-- Fuel Calculator -->
+<div class="fuel-calculator">
+    <h2><u>Fuel Calculator</u></h2>
+    <div class="input-group">
+        <label for="rennlaenge">Rennlänge (Minuten):</label>
+        <input type="number" id="rennlaenge" min="0" step="1" placeholder="Minuten">
+    </div>
+    <div class="input-group">
+        <label for="rundenzeit-min">Rundenzeit:</label>
+        <input type="number" id="rundenzeit-min" min="0" step="1" placeholder="Minuten">
+        <input type="number" id="rundenzeit-sek" min="0" max="59" step="1" placeholder="Sekunden">
+        <input type="number" id="rundenzeit-ms" min="0" max="999" step="1" placeholder="Millisekunden (optional)">
+    </div>
+    <div class="input-group">
+        <label for="sprit-pro-runde">Sprit pro Runde (Liter):</label>
+        <input type="number" id="sprit-pro-runde" min="0" step="0.1" placeholder="Liter">
+    </div>
+    <button onclick="berechneSprit()">Spritbedarf berechnen</button>
+    <p id="riskanter-sprit"></p>
+    <p id="sprit-plus-eine-runde"></p>
+    <p id="safe-fuel"></p>
+</div>
+
+<script>
+    // Funktion zur Berechnung des Spritbedarfs
+    function berechneSprit() {
+        // Eingabewerte auslesen
+        const rennlaenge = parseFloat(document.getElementById("rennlaenge").value); // Rennlänge in Minuten
+        const rundenzeitMin = parseFloat(document.getElementById("rundenzeit-min").value); // Minuten der Rundenzeit
+        const rundenzeitSek = parseFloat(document.getElementById("rundenzeit-sek").value); // Sekunden der Rundenzeit
+        const rundenzeitMs = parseFloat(document.getElementById("rundenzeit-ms").value) || 0; // Millisekunden der Rundenzeit (optional)
+        const spritProRunde = parseFloat(document.getElementById("sprit-pro-runde").value); // Sprit pro Runde in Litern
+
+        // Überprüfen, ob alle Pflichtfelder ausgefüllt sind
+        if (isNaN(rennlaenge) || isNaN(rundenzeitMin) || isNaN(rundenzeitSek) || isNaN(spritProRunde)) {
+            alert("Bitte fülle alle Pflichtfelder aus!");
+            return;
+        }
+
+        // Rundenzeit in Sekunden umrechnen
+        const rundenzeitInSekunden = rundenzeitMin * 60 + rundenzeitSek + rundenzeitMs / 1000;
+
+        // Gesamte Rennzeit in Sekunden
+        const rennzeitInSekunden = rennlaenge * 60;
+
+        // Anzahl der Runden berechnen
+        const anzahlRunden = rennzeitInSekunden / rundenzeitInSekunden;
+
+        // Riskanter Spritbedarf berechnen
+        const riskanterSprit = anzahlRunden * spritProRunde;
+
+        // Spritbedarf + 1 Runde berechnen
+        const spritPlusEineRunde = riskanterSprit + spritProRunde;
+
+        // Safe Fuel (Spritbedarf + 2 Runden) berechnen
+        const safeFuel = riskanterSprit + 2 * spritProRunde;
+
+        // Ergebnisse anzeigen
+        document.getElementById("riskanter-sprit").innerText = `Riskanter Sprit: ${riskanterSprit.toFixed(2)} Liter`;
+        document.getElementById("sprit-plus-eine-runde").innerText = `Sprit + 1 Runde: ${spritPlusEineRunde.toFixed(2)} Liter`;
+        document.getElementById("safe-fuel").innerText = `Safe Fuel: ${safeFuel.toFixed(2)} Liter`;
+    }
+</script>
+
+<style>
+    .fuel-calculator {
+        margin-top: 40px;
+    }
+    .input-group {
+        margin-bottom: 20px;
+    }
+    .input-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    .input-group input {
+        margin-right: 10px;
+        padding: 5px;
+        width: 100px;
+    }
+    .input-group input[type="number"] {
+        width: 120px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    p {
+        font-size: 18px;
+        margin-top: 10px;
+    }
+</style>
